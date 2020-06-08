@@ -1,0 +1,13 @@
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\bin\Debug\netcoreapp3.1\server.exe
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\bin\Debug\netcoreapp3.1\server.deps.json
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\bin\Debug\netcoreapp3.1\server.runtimeconfig.json
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\bin\Debug\netcoreapp3.1\server.runtimeconfig.dev.json
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\bin\Debug\netcoreapp3.1\server.dll
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\bin\Debug\netcoreapp3.1\server.pdb
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\obj\Debug\netcoreapp3.1\server.csprojAssemblyReference.cache
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\obj\Debug\netcoreapp3.1\server.AssemblyInfoInputs.cache
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\obj\Debug\netcoreapp3.1\server.AssemblyInfo.cs
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\obj\Debug\netcoreapp3.1\server.csproj.CoreCompileInputs.cache
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\obj\Debug\netcoreapp3.1\server.dll
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\obj\Debug\netcoreapp3.1\server.pdb
+C:\Users\ASUS\Desktop\CN\final\FPS\network\server\obj\Debug\netcoreapp3.1\server.genruntimeconfig.cache
