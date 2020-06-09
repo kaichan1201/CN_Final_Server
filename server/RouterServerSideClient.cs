@@ -6,19 +6,19 @@ using System.Net.Sockets;
 using System.Numerics;
 namespace server
 {
-    public class ServerSideClient
+    public class RouterServerSideClient
     {
         public static int dataBufferSize = 4096;
 
         public int id;
-        public Player player;
+        // public Player player;
         public TCP tcp;
-        public UDP udp;
+        // public UDP udp;
 
-        public ServerSideClient(int _client_id) {
+        public RouterServerSideClient(int _client_id) {
             id = _client_id;
             tcp = new TCP(_client_id);
-            udp = new UDP(_client_id);
+            // udp = new UDP(_client_id);
         }
 
         public class TCP
@@ -61,7 +61,7 @@ namespace server
                 {
                     int _dataLength = stream.EndRead(_result);
                     if (_dataLength <= 0) {
-                        Server.clients[id]._Disconnect();
+                        RouterServer.clients[id]._Disconnect();
                         return;
                     }
 
@@ -74,7 +74,7 @@ namespace server
                 catch (Exception _ex)
                 {
                     Console.WriteLine($"Error receiving TCP data: {_ex}");
-                    Server.clients[id]._Disconnect();
+                    RouterServer.clients[id]._Disconnect();
                 }
             }
             private bool _HandleData(byte[] _data) {
@@ -116,64 +116,64 @@ namespace server
             }
         }
 
-        public class UDP
-        {
-            public IPEndPoint endPoint;
+        // public class UDP
+        // {
+        //     public IPEndPoint endPoint;
 
-            private int id;
+        //     private int id;
 
-            public UDP(int _id) {id = _id;}
+        //     public UDP(int _id) {id = _id;}
 
-            public void ReceiveConnect(IPEndPoint _endPoint) {
-                endPoint = _endPoint;
-            }
+        //     public void ReceiveConnect(IPEndPoint _endPoint) {
+        //         endPoint = _endPoint;
+        //     }
 
-            public void SendData(Packet _packet) {
-                Server.SendUDPData(endPoint, _packet);
-            }
+        //     public void SendData(Packet _packet) {
+        //         Server.SendUDPData(endPoint, _packet);
+        //     }
 
-            public void HandleData(Packet _packet) {  // can be moved to Server.cs
-                int _packetLength = _packet.ReadInt();
-                byte[] _packetBytes = _packet.ReadBytes(_packetLength);
+        //     public void HandleData(Packet _packet) {  // can be moved to Server.cs
+        //         int _packetLength = _packet.ReadInt();
+        //         byte[] _packetBytes = _packet.ReadBytes(_packetLength);
 
-                ThreadManager.ExecuteOnMainThread(() => {
-                    using (Packet _newPacket = new Packet(_packetBytes)) {
-                        int _packetId = _newPacket.ReadInt();
-                        Server.packetHandlers[_packetId](id, _newPacket);
-                    };
-                });
-            }
+        //         ThreadManager.ExecuteOnMainThread(() => {
+        //             using (Packet _newPacket = new Packet(_packetBytes)) {
+        //                 int _packetId = _newPacket.ReadInt();
+        //                 Server.packetHandlers[_packetId](id, _newPacket);
+        //             };
+        //         });
+        //     }
 
-            public void Disconnect() {
-                endPoint = null;
-            }
-        }
+        //     public void Disconnect() {
+        //         endPoint = null;
+        //     }
+        // }
 
-        public void SendIntoGame(string _playerName) {
-            player = new Player(id, _playerName);
-            GameLogic.currentPlayers++;
-            // update info
-            foreach(ServerSideClient _client in Server.clients.Values) {
-                if (_client.player != null) {
-                    if (_client.id != id) {
-                        ServerSend.SpawnPlayer(id, _client.player); // info of all other players -> new player
-                    }
-                    ServerSend.SpawnPlayer(_client.id, player); // info of new player -> all other players
-                }
-            }
-        }
+        // public void SendIntoGame(string _playerName) {
+        //     player = new Player(id, _playerName);
+        //     GameLogic.currentPlayers++;
+        //     // update info
+        //     foreach(ServerSideClient _client in Server.clients.Values) {
+        //         if (_client.player != null) {
+        //             if (_client.id != id) {
+        //                 ServerSend.SpawnPlayer(id, _client.player); // info of all other players -> new player
+        //             }
+        //             ServerSend.SpawnPlayer(_client.id, player); // info of new player -> all other players
+        //         }
+        //     }
+        // }
 
         private void _Disconnect() {
 
-            Console.WriteLine($"{tcp.clientSocket.Client.RemoteEndPoint} has disconnected.");
-            if (player.isReady) {
-                GameLogic.readyPlayers--;
-            }
-            GameLogic.currentPlayers--;
-            player = null;
+            Console.WriteLine($"{tcp.clientSocket.Client.RemoteEndPoint} has disconnected from router server.");
+            // if (player.isReady) {
+            //     GameLogic.readyPlayers--;
+            // }
+            // GameLogic.currentPlayers--;
+            // player = null;
             tcp.Disconnect();
-            udp.Disconnect();
-            ServerSend.KickPlayerToAllExcept(id);
+            // udp.Disconnect();
+            // ServerSend.KickPlayerToAllExcept(id);
         }
     }
 }

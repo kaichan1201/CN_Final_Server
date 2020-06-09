@@ -17,6 +17,11 @@ namespace server
         animToAllExceptBool,
         animToAllExceptInt,
         shootToAll,
+        newScoreToAll,
+        winToAll,
+        respawnToAll,
+        routerWelcome,
+
     }
 
     /// <summary>Sent from client to server.</summary>
@@ -29,6 +34,8 @@ namespace server
         playerAnimBool,
         playerAnimInt,
         playerShoot,
+        playerAddScore,
+        playerRespawn
     }
 
     public class Packet : IDisposable

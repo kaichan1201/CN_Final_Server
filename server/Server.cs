@@ -98,6 +98,8 @@ namespace server
                 {(int)ClientPackets.playerAnimBool, ServerHandle.PlayerAnimBool},
                 {(int)ClientPackets.playerAnimInt, ServerHandle.PlayerAnimInt},
                 {(int)ClientPackets.playerShoot, ServerHandle.PlayerShoot},
+                {(int)ClientPackets.playerAddScore, ServerHandle.PlayerAddScore},
+                {(int)ClientPackets.playerRespawn, ServerHandle.PlayerRespawn},
             };
             Console.WriteLine("Initialized packets.");
         }

@@ -11,15 +11,18 @@ namespace server
         public Quaternion rotation;
         public Quaternion upperRotation;
         public bool isReady;
-        public bool whichTeam;
+        public int score;
+        public int deathCount;
 
-        public Player(int _id, string _username, Vector3 _spawnPosition) {
+        public Player(int _id, string _username) {
             id = _id;
             username = _username;
             health = 100;
-            position = _spawnPosition;
+            position = new Vector3(0, 0, 0);
             rotation = Quaternion.Identity;
             isReady = false;
+            score = 0;
+            deathCount = 0;
         }
 
         public void UpdatePositionRotation(Vector3 _position, Quaternion _rotation, Quaternion _upperRotation) {
@@ -39,6 +42,10 @@ namespace server
                 GameLogic.readyPlayers--;
 
             ServerSend.IsReadyToAllExcept(this);
+        }
+    
+        public void Respawn() {
+            health = 100;
         }
     }
 }

@@ -26,9 +26,10 @@ namespace server
         }
 
         public static void StartGame(int _fromClient, Packet _packet) {
-            //Start the game (only once)
+            //Start the game
             Console.WriteLine($"{GameLogic.readyPlayers}, {GameLogic.currentPlayers}");
-            if (GameLogic.readyPlayers == GameLogic.currentPlayers  && (!GameLogic.isGameStarted)) {
+            // if (GameLogic.readyPlayers == GameLogic.currentPlayers  && (!GameLogic.isGameStarted)) {
+            if (GameLogic.readyPlayers == GameLogic.currentPlayers) {
                 ServerSend.StartGameToAll();
                 GameLogic.isGameStarted = true;
             }
@@ -60,16 +61,38 @@ namespace server
             int _hitId = _packet.ReadInt();
             Vector3 _hitPoint = _packet.ReadVector3();
 
-            //TODO: validate the hit?
-
             int _hitHealth = -1;
             if (_hitId != -1) {
-                Server.clients[_hitId].player.health -= 5;
-                _hitHealth = Server.clients[_hitId].player.health;
+                Player _hitPlayer = Server.clients[_hitId].player;
+                _hitPlayer.health -= 5;
                 // TODO: Handle Death?
+                if (_hitPlayer.health <= 0) {
+                    _hitPlayer.deathCount += 1;
+                }
+                _hitHealth = _hitPlayer.health;
             }
 
             ServerSend.ShootToAll(_fromClient, _hitId, _hitPoint, _hitHealth);
+        }
+    
+        public static void PlayerAddScore(int _fromClient, Packet _packet) {
+            int _team = _packet.ReadInt();
+            int _addScore = _packet.ReadInt();
+
+            Console.WriteLine($"{GameLogic.score[_team]}, {_addScore}");
+            Server.clients[_fromClient].player.score += _addScore;
+            GameLogic.score[_team] += _addScore;
+            ServerSend.NewScoreToAll(_team, GameLogic.score[_team]);
+
+            if (GameLogic.score[_team] >= Constants.WIN_SCORE) {
+                ServerSend.WinToAll(_team);
+                GameLogic.isGameStarted = false;
+            }
+        }
+
+        public static void PlayerRespawn(int _fromClient, Packet _packet) {
+            Server.clients[_fromClient].player.Respawn();
+            ServerSend.RespawnToAll(_fromClient);
         }
     }
 }
