@@ -27,6 +27,7 @@ namespace server
 
         public static void StartGame(int _fromClient, Packet _packet) {
             //Start the game (only once)
+            Console.WriteLine($"{GameLogic.readyPlayers}, {GameLogic.currentPlayers}");
             if (GameLogic.readyPlayers == GameLogic.currentPlayers  && (!GameLogic.isGameStarted)) {
                 ServerSend.StartGameToAll();
                 GameLogic.isGameStarted = true;

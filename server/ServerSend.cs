@@ -58,9 +58,19 @@ namespace server
                 _packet.Write(_player.username);
                 _packet.Write(_player.position);
                 _packet.Write(_player.rotation);
+                _packet.Write(_player.isReady);
                 _SendTCPData(_toClient, _packet);
             }
         }
+
+        public static void KickPlayerToAllExcept(int _id) {
+            // notify everyone (except _id) of the player kicked
+            using (Packet _packet = new Packet((int)ServerPackets.kickPlayerToAllExcept)) {
+                _packet.Write(_id);
+                _SendTCPDataToAll(_id, _packet);
+            }
+        }
+
         public static void IsReadyToAllExcept(Player _player) {
             using (Packet _packet = new Packet((int)ServerPackets.isReadyToAllExcept)) {
                 _packet.Write(_player.id);

@@ -10,6 +10,7 @@ namespace server
     {
         welcome = 1,
         spawnPlayer,
+        kickPlayerToAllExcept,
         isReadyToAllExcept,
         startGameToAll,
         positionRotationToAllExcept,

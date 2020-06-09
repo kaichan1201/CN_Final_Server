@@ -164,10 +164,16 @@ namespace server
         }
 
         private void _Disconnect() {
+
             Console.WriteLine($"{tcp.clientSocket.Client.RemoteEndPoint} has disconnected.");
+            if (player.isReady) {
+                GameLogic.readyPlayers--;
+            }
+            GameLogic.currentPlayers--;
             player = null;
             tcp.Disconnect();
             udp.Disconnect();
+            ServerSend.KickPlayerToAllExcept(id);
         }
     }
 }
