@@ -49,11 +49,11 @@ namespace server
         #region Packets
 
         #region Router
-        public static void RouterWelcome(int _toClient, string _msg) {
+        public static void RouterWelcome(int _toClient, string _msg, int _port) {
             using (Packet _packet = new Packet((int)ServerPackets.routerWelcome)) {
                 _packet.Write(_msg);
-                _packet.Write(_toClient);
-                _SendTCPData(_toClient, _packet);
+                _packet.Write(_port);
+                _RouterSendTCPData(_toClient, _packet);
             }
         }
         #endregion

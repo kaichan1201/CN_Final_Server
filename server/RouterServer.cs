@@ -9,6 +9,7 @@ namespace server
     {
         public static int MaxPlayers {get; private set;}
         public static int Port {get; private set;}
+        public static int ClientCount;
         public static Dictionary<int, RouterServerSideClient> clients = new Dictionary<int, RouterServerSideClient>();
         public static Dictionary<int, int> ports = new Dictionary<int, int>();
 
@@ -19,6 +20,7 @@ namespace server
         public static void Start(int _maxPlayers) {
             MaxPlayers = _maxPlayers;
             Port = Constants.ROUTER_SERVER_PORT;
+            ClientCount = 0;
 
             Console.WriteLine("Starting router server...");
             _InitializeServerData();
@@ -34,7 +36,7 @@ namespace server
         private static void _TCPConnectCallback(IAsyncResult _result) {
             TcpClient _accepted_client = tcpListener.EndAcceptTcpClient(_result);
             tcpListener.BeginAcceptTcpClient(new AsyncCallback(_TCPConnectCallback), null);
-            Console.WriteLine($"Incoming connection from {_accepted_client.Client.RemoteEndPoint}...");
+            Console.WriteLine($"Incoming connection to router server from {_accepted_client.Client.RemoteEndPoint}...");
             
             for (int i = 1; i <= MaxPlayers; i++) {
                 if (clients[i].tcp.clientSocket == null) {
@@ -42,7 +44,7 @@ namespace server
                     return;
                 }
             }
-            Console.WriteLine($"{_accepted_client.Client.RemoteEndPoint} failed to connect: server full!");
+            Console.WriteLine($"{_accepted_client.Client.RemoteEndPoint} failed to connect: router server full!");
         }
 
         private static void _InitializeServerData() {

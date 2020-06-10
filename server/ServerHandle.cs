@@ -40,7 +40,9 @@ namespace server
             Quaternion _rotation = _packet.ReadQuaternion();
             Quaternion _upperRotation = _packet.ReadQuaternion();
 
-            Server.clients[_fromClient].player.UpdatePositionRotation(_position, _rotation, _upperRotation);
+            if (Server.clients[_fromClient].player != null) {
+                Server.clients[_fromClient].player.UpdatePositionRotation(_position, _rotation, _upperRotation);
+            }
         }
 
         public static void PlayerAnimBool(int _fromClient, Packet _packet) {
@@ -58,41 +60,53 @@ namespace server
         }
 
         public static void PlayerShoot(int _fromClient, Packet _packet) {
-            int _hitId = _packet.ReadInt();
-            Vector3 _hitPoint = _packet.ReadVector3();
+            if(Server.clients[_fromClient].player != null) {
+                int _hitId = _packet.ReadInt();
+                Vector3 _hitPoint = _packet.ReadVector3();
 
-            int _hitHealth = -1;
-            if (_hitId != -1) {
-                Player _hitPlayer = Server.clients[_hitId].player;
-                _hitPlayer.health -= 5;
-                // TODO: Handle Death?
-                if (_hitPlayer.health <= 0) {
-                    _hitPlayer.deathCount += 1;
+                int _hitHealth = -1;
+                if (_hitId != -1) {
+                    Player _hitPlayer = Server.clients[_hitId].player;
+                    _hitPlayer.health -= 5;
+                    // TODO: Handle Death?
+                    if (_hitPlayer.health == 0) {
+                        _hitPlayer.deathCount += 1;
+                    }
+                    _hitHealth = _hitPlayer.health;
                 }
-                _hitHealth = _hitPlayer.health;
-            }
 
-            ServerSend.ShootToAll(_fromClient, _hitId, _hitPoint, _hitHealth);
+                ServerSend.ShootToAll(_fromClient, _hitId, _hitPoint, _hitHealth);
+            }
         }
     
         public static void PlayerAddScore(int _fromClient, Packet _packet) {
-            int _team = _packet.ReadInt();
-            int _addScore = _packet.ReadInt();
+            if(Server.clients[_fromClient].player != null) {
+                int _team = _packet.ReadInt();
+                int _addScore = _packet.ReadInt();
 
-            Console.WriteLine($"{GameLogic.score[_team]}, {_addScore}");
-            Server.clients[_fromClient].player.score += _addScore;
-            GameLogic.score[_team] += _addScore;
-            ServerSend.NewScoreToAll(_team, GameLogic.score[_team]);
+                Console.WriteLine($"{GameLogic.score[_team]}, {_addScore}");
+                Server.clients[_fromClient].player.score += _addScore;
+                GameLogic.score[_team] += _addScore;
+                ServerSend.NewScoreToAll(_team, GameLogic.score[_team]);
 
-            if (GameLogic.score[_team] >= Constants.WIN_SCORE) {
-                ServerSend.WinToAll(_team);
-                GameLogic.isGameStarted = false;
+                if (GameLogic.score[_team] >= Constants.WIN_SCORE) {
+                    ServerSend.WinToAll(_team);
+                    //Restart game
+                    // foreach(ServerSideClient _client in Server.clients.Values) {
+                    //     if (_client.tcp.clientSocket != null){
+                    //         _client._Disconnect();
+                    //     }
+                    // }
+                    GameLogic.Reset();
+                }
             }
         }
 
         public static void PlayerRespawn(int _fromClient, Packet _packet) {
-            Server.clients[_fromClient].player.Respawn();
-            ServerSend.RespawnToAll(_fromClient);
+            if(Server.clients[_fromClient].player != null) {
+                Server.clients[_fromClient].player.Respawn();
+                ServerSend.RespawnToAll(_fromClient);
+            }
         }
     }
 }

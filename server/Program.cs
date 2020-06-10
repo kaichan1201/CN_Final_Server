@@ -16,7 +16,8 @@ namespace server
             Thread mainThread = new Thread(new ThreadStart(_MainThread));
             mainThread.Start();
             
-            Server.Start(12, Constants.SERVER_PORT);
+            RouterServer.Start(12);
+            Server.Start(12);
         }
 
         private static void _MainThread() {

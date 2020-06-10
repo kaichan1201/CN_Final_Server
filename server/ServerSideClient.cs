@@ -129,7 +129,8 @@ namespace server
             }
 
             public void SendData(Packet _packet) {
-                Server.SendUDPData(endPoint, _packet);
+                // Server.SendUDPData(endPoint, _packet);
+                Server.SendUDPData(endPoint, _packet, id);
             }
 
             public void HandleData(Packet _packet) {  // can be moved to Server.cs
@@ -163,17 +164,19 @@ namespace server
             }
         }
 
-        private void _Disconnect() {
+        public void _Disconnect() {
 
-            Console.WriteLine($"{tcp.clientSocket.Client.RemoteEndPoint} has disconnected.");
-            if (player.isReady) {
-                GameLogic.readyPlayers--;
+            if (tcp.clientSocket != null) {
+                Console.WriteLine($"{tcp.clientSocket.Client.RemoteEndPoint} has disconnected.");
+                if (player.isReady) {
+                    GameLogic.readyPlayers--;
+                }
+                GameLogic.currentPlayers--;
+                player = null;
+                tcp.Disconnect();
+                udp.Disconnect();
+                ServerSend.KickPlayerToAllExcept(id);
             }
-            GameLogic.currentPlayers--;
-            player = null;
-            tcp.Disconnect();
-            udp.Disconnect();
-            ServerSend.KickPlayerToAllExcept(id);
         }
     }
 }
