@@ -109,6 +109,7 @@ namespace server
                 }
                 catch {
                     Console.WriteLine("WTF");
+                    return true;
                 }
             }
 
