@@ -29,20 +29,22 @@ namespace server
             public TCP(int _client_id) {id = _client_id;}
 
             public void ReceiveConnect(TcpClient _clientSocket) {
-                clientSocket = _clientSocket;
-                clientSocket.ReceiveBufferSize = dataBufferSize;
-                clientSocket.SendBufferSize = dataBufferSize;
+                if (RouterServer.ClientCount < RouterServer.MaxPlayers){
+                    clientSocket = _clientSocket;
+                    clientSocket.ReceiveBufferSize = dataBufferSize;
+                    clientSocket.SendBufferSize = dataBufferSize;
 
-                stream = clientSocket.GetStream();
+                    stream = clientSocket.GetStream();
 
-                receivedPacket = new Packet();
-                receiveBuffer = new byte[dataBufferSize];
-                stream.BeginRead(receiveBuffer, 0, dataBufferSize, _ReceiveCallback, null);
+                    receivedPacket = new Packet();
+                    receiveBuffer = new byte[dataBufferSize];
+                    stream.BeginRead(receiveBuffer, 0, dataBufferSize, _ReceiveCallback, null);
 
-                int _port = RouterServer.ports[(RouterServer.ClientCount % RouterServer.MaxPlayers) + 1];
-                RouterServer.ClientCount += 1;
+                    int _port = RouterServer.ports[(RouterServer.ClientCount % RouterServer.MaxPlayers) + 1];
+                    RouterServer.ClientCount += 1;
 
-                ServerSend.RouterWelcome(id, $"Assigned port {_port} by the Router Server!", _port);
+                    ServerSend.RouterWelcome(id, $"Assigned port {_port} by the Router Server!", _port);
+                }
             }
 
             public void SendData(Packet _packet) {

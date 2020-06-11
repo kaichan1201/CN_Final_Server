@@ -28,8 +28,8 @@ namespace server
         public static void StartGame(int _fromClient, Packet _packet) {
             //Start the game
             Console.WriteLine($"{GameLogic.readyPlayers}, {GameLogic.currentPlayers}");
-            // if (GameLogic.readyPlayers == GameLogic.currentPlayers  && (!GameLogic.isGameStarted)) {
-            if (GameLogic.readyPlayers == GameLogic.currentPlayers) {
+            if (GameLogic.readyPlayers == GameLogic.currentPlayers  && (!GameLogic.isGameStarted)) {
+            // if (GameLogic.readyPlayers == GameLogic.currentPlayers) {
                 ServerSend.StartGameToAll();
                 GameLogic.isGameStarted = true;
             }
