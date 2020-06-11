@@ -78,33 +78,38 @@ namespace server
                 }
             }
             private bool _HandleData(byte[] _data) {
-                int _packetLength = 0;
-                receivedPacket.SetBytes(_data);
+                try {
+                    int _packetLength = 0;
+                    receivedPacket.SetBytes(_data);
 
-                if (receivedPacket.UnreadLength() >= 4) {
-                    _packetLength = receivedPacket.ReadInt(); // read the (remaining) length of the packet
-                    if (_packetLength <= 0) {return true;}
-                }
-
-                while (_packetLength > 0 && _packetLength <= receivedPacket.UnreadLength()) {
-                    byte[] _packetBytes = receivedPacket.ReadBytes(_packetLength);
-                    // schedule the corresponding packet handler onto the main thread
-                    ThreadManager.ExecuteOnMainThread(() => {
-                        using (Packet _packet = new Packet(_packetBytes)) {
-                            int _packetId = _packet.ReadInt();
-                            Server.packetHandlers[_packetId](id, _packet);
-                        }
-                    });
-
-                    _packetLength = 0;
                     if (receivedPacket.UnreadLength() >= 4) {
                         _packetLength = receivedPacket.ReadInt(); // read the (remaining) length of the packet
                         if (_packetLength <= 0) {return true;}
                     }
-                }
 
-                if (_packetLength <= 1) {return true;}
-                return false;
+                    while (_packetLength > 0 && _packetLength <= receivedPacket.UnreadLength()) {
+                        byte[] _packetBytes = receivedPacket.ReadBytes(_packetLength);
+                        // schedule the corresponding packet handler onto the main thread
+                        ThreadManager.ExecuteOnMainThread(() => {
+                            using (Packet _packet = new Packet(_packetBytes)) {
+                                int _packetId = _packet.ReadInt();
+                                Server.packetHandlers[_packetId](id, _packet);
+                            }
+                        });
+
+                        _packetLength = 0;
+                        if (receivedPacket.UnreadLength() >= 4) {
+                            _packetLength = receivedPacket.ReadInt(); // read the (remaining) length of the packet
+                            if (_packetLength <= 0) {return true;}
+                        }
+                    }
+
+                    if (_packetLength <= 1) {return true;}
+                    return false;
+                }
+                catch {
+                    Console.WriteLine("WTF");
+                }
             }
 
             public void Disconnect() {
