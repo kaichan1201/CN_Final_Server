@@ -91,9 +91,14 @@ namespace server
                         byte[] _packetBytes = receivedPacket.ReadBytes(_packetLength);
                         // schedule the corresponding packet handler onto the main thread
                         ThreadManager.ExecuteOnMainThread(() => {
-                            using (Packet _packet = new Packet(_packetBytes)) {
-                                int _packetId = _packet.ReadInt();
-                                Server.packetHandlers[_packetId](id, _packet);
+                            try {
+                                using (Packet _packet = new Packet(_packetBytes)) {
+                                    int _packetId = _packet.ReadInt();
+                                    Server.packetHandlers[_packetId](id, _packet);
+                                }
+                            }
+                            catch {
+                                Console.WriteLine("WTFFF");
                             }
                         });
 
